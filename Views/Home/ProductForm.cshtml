@@ -1,0 +1,112 @@
+﻿@*@model IEnumerable<Product>*@
+@model Tresorit.ViewModels.ProductViewModel
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Save", "Home",new { @onsubmit = "return VerifyRating()" } ))
+{
+<div>
+
+    <h2>@Model.PartitonKey reviews:</h2>
+
+    <ul>
+        @foreach (var item in Model.Products)
+        {
+            <li>
+                @item.Review - @item.Timestamp.ToString("g")
+            </li>
+            @for (int i = 0; i < item.Rating; i++)
+            {
+                <span class="fas fa-star"></span>
+            }
+            @for (int i = item.Rating; i < 5; i++)
+            {
+                <span class="far fa-star"></span>
+            }
+        }
+    </ul>
+        
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Add Review</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>                    
+                </div>
+                <div class="modal-body">
+
+                    @Html.TextAreaFor(m => m.Review, new { @class = "form-control", @rows = 5 })
+                    <br />
+                    <p>Select a rating:</p>
+                    <div onmouseout="RatingSelected()">
+                        <span id="span1" onmouseout="RateOut(1)" onmouseover="RateOver(1)" onclick="RateClick(1)" class="far fa-star" style="font-size:130%"></span>
+                        <span id="span2" onmouseout="RateOut(2)" onmouseover="RateOver(2)" onclick="RateClick(2)" class="far fa-star" style="font-size:130%"></span>
+                        <span id="span3" onmouseout="RateOut(3)" onmouseover="RateOver(3)" onclick="RateClick(3)" class="far fa-star" style="font-size:130%"></span>
+                        <span id="span4" onmouseout="RateOut(4)" onmouseover="RateOver(4)" onclick="RateClick(4)" class="far fa-star" style="font-size:130%"></span>
+                        <span id="span5" onmouseout="RateOut(5)" onmouseover="RateOver(5)" onclick="RateClick(5)" class="far fa-star" style="font-size:130%"></span>
+                    </div>
+                    <div>
+                        <input type="hidden" name="rating" id="lblRating" value="0" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @Html.Hidden("PartitionKey", Model.PartitonKey)
+</div>
+<div>
+    @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@
+    <a asp-action="Index" class="btn btn-light">Back to List</a>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Add Review
+    </button>
+</div>
+
+}
+
+<script type="text/javascript">
+    function RateOut(rating) {
+        for (var i = 1; i <= rating; i++) {
+            $("#span" + i).attr('class', 'far fa-star');
+        }
+    }
+    function RateOver(rating) {
+        for (var i = 1; i <= rating; i++) {
+            $("#span" + i).attr('class', 'fas fa-star');
+        }
+    }
+    function RateClick(rating) {
+        $("#lblRating").val(rating);
+        for (var i = 1; i <= rating; i++) {
+            $("#span" + i).attr('class', 'fas fa-star');
+        }
+        for (var i = rating+1; i <= 5; i++) {
+            $("#span" + i).attr('class', 'far fa-star');
+        }
+    }
+    function RatingSelected() {
+        var rating = $("#lblRating").val();
+        for (var i = 1; i <= rating; i++) {
+            $("#span" + i).attr('class', 'fas fa-star');
+        }
+    }
+    function VerifyRating() {           // !!!!!!!!!!!!!!!!!!!!!!!!!
+        var rating = $("#lblRating").val();
+        if (rating == "0") {
+            alert("Please select rating");
+            return false
+        }
+    }
+</script>
