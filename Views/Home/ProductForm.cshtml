@@ -36,21 +36,12 @@
     }
 </div>
 
-<button id="toggleButton" class="btn btn-link">Show more</button>
+<button id="toggleButton" class="btn btn-link">Show all</button>
 
 
 @using (Html.BeginForm("Save", "Home", new { @onsubmit = "return VerifyRating()" }))
 {
     <div>
-
-        @*<script type="text/javascript">
-            //var hideDivs = function () {
-            //    $('.reviewsDivs').each(function () {
-            //        $(this).children('div').hide().filter(':lt(5)').show();
-            //    });
-            //}
-
-                        </script>*@
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -111,7 +102,7 @@
         toggleDivs();
 
         $("#toggleButton").click(function () {
-            $(this).text() === 'Show more' ? $(this).text('Show less') : $(this).text('Show more');
+            $(this).text() === 'Show all' ? $(this).text('Show less') : $(this).text('Show all');
             toggleDivs();
         });
 

@@ -15,8 +15,11 @@ namespace Tresorit.Models
 
         [DisplayFormat(DataFormatString = "{0:N1}")]
         public decimal AverageRating { get; set; }
-
         public int? RatingQuantity { get; set; }
+
+        [Display(Name ="Upload File")]
+        public string ImgPath { get; set; }
+
         public Product()
         {
         }

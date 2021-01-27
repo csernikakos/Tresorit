@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tresorit.Models;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using System.IO;
 
 namespace Tresorit.Data
 {
@@ -11,6 +14,7 @@ namespace Tresorit.Data
     {
         string tableName = "TresoritTable";
         string connString = "DefaultEndpointsProtocol=https;AccountName=tresoritstrorageacc;AccountKey=tq+qxPI6OO2QYMlCCSzveMTSHz+UJJVSUt/8/yvX9WVjE0umZJgaxbAVEZMeqlWReDOP20YlFXxteHd/GTD+FA==;EndpointSuffix=core.windows.net";
+
         CloudTable table;
 
         public DataTableQueries()
@@ -98,6 +102,66 @@ namespace Tresorit.Data
                 Console.WriteLine(e.Message);
                 Console.ReadLine();
                 throw;
+            }
+        }
+
+        public async Task CreateBlob()
+        {
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+            string containername = "blobcontainer2" + Guid.NewGuid().ToString();
+            BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containername);
+        }
+
+        public async Task UploadToBlobContainer()
+        {
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+            string containername = "blobcontainer" + Guid.NewGuid().ToString();
+            BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containername);
+
+            string localPath = "E://";
+            string fileName = "blobupload.txt";
+            string localFilePath = Path.Combine(localPath, fileName);
+
+            await File.WriteAllTextAsync(localFilePath, "Helo");
+
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            using FileStream uploadFileStream = File.OpenRead(localFilePath);
+            await blobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
+        }
+
+        public async Task UploadImageToBlobContainer()
+        {
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("blobcontainer");
+
+            string filePath = "E:\\VisualStudioProjects\\_img\\tresorit-logo.png";
+
+            BlobClient blobClient = containerClient.GetBlobClient("blobcontainer");
+            using FileStream uploadFileStream = File.OpenRead(filePath);
+            await blobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
+        }
+
+        public void Upload(IEnumerable<FileInfo> files, string connectionString, string container)
+        {
+            var containerClient = new BlobContainerClient(connectionString, container);
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    var blobClient = containerClient.GetBlobClient(file.Name);
+                    using(var fileStream = File.OpenRead(file.FullName))
+                    {
+                        blobClient.Upload(fileStream,overwrite:true);
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
         }
 

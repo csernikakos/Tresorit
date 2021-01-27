@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Tresorit.Data;
 using Tresorit.Models;
 using Tresorit.ViewModels;
@@ -20,7 +21,25 @@ namespace Tresorit.Controllers
         {
             _logger = logger;
             dataTable = new DataTableQueries();
+
+            var config = GetConfiguration();
+            var files = GetFiles(config["AzureStorage:SourceFolder"]);
+            foreach (var item in files)
+            {
+                Console.WriteLine(item.Name);
+            }
+            dataTable.Upload(files, config["AzureStorage:ConnectionString"], config["AzureStorage:Container"]);
+            //dataTable.UploadImageToBlobContainer().Wait();
         }
+        static IConfigurationRoot GetConfiguration()
+        {
+            return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
+        }
+
+        static IEnumerable<FileInfo> GetFiles(string sourceFolder)
+        { 
+            return new DirectoryInfo(sourceFolder).GetFiles().Where(f => !f.Attributes.HasFlag(FileAttributes.Hidden));
+        }        
 
         public IActionResult Index()
         {
@@ -29,17 +48,6 @@ namespace Tresorit.Controllers
             {
                 product.AverageRating = dataTable.AverageRating(product.PartitionKey);
                 product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
-                //if (dataTable.AverageRating(product.PartitionKey)>0)
-                //{
-                //    product.AverageRating = dataTable.AverageRating(product.PartitionKey);
-                //    product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
-                //}
-                //else
-                //{
-                //    product.AverageRating = 0;
-                //    product.RatingQuantity = 0;
-                //}
-
             }
             return View(products);
         }
@@ -59,31 +67,11 @@ namespace Tresorit.Controllers
 
         public IActionResult Save(Product product)
         {
-            //List<Product> products = dataTable.GetPartitionKeyItems(product.PartitionKey);
-            //ProductViewModel productViewModel = new ProductViewModel
-            //{
-            //    Products = products
-            //};
-
-            ////Guid guid = Guid.NewGuid();
-            //Product insertedProduct = new Product() {
-            //    PartitionKey = product.PartitionKey,
-            //    RowKey = guid.ToString(),
-            //    Review = product.Review,
-            //    Rating = product.Rating
-            //};
-
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
             dataTable.InsertOrMergeProduct(product).Wait();
             return RedirectToAction("Index", "Home");
         }
-
-        //public IActionResult SaveNewProduct(Product product)
-        //{
-        //    dataTable.InsertOrMergeProduct(product).Wait();
-        //    return RedirectToAction("Index", "Home");
-        //}
 
         public IActionResult New()
         {
