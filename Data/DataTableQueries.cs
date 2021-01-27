@@ -27,15 +27,6 @@ namespace Tresorit.Data
             TableQuery<Product> queryResult = new TableQuery<Product>();
             var itemlist = table.ExecuteQuery(queryResult);
 
-            //var itemListWithoutNulls = new List<Product>();
-            //foreach (var item in itemlist)
-            //{
-            //    if (item.Rating!=null)
-            //    {
-            //        itemListWithoutNulls.Add(item);
-            //    }
-            //}
-
             List<Product> distinct = itemlist.GroupBy(x => x.PartitionKey).Select(g => g.First()).ToList();
             return distinct;
         }
