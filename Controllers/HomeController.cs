@@ -28,7 +28,18 @@ namespace Tresorit.Controllers
             foreach (var product in products)
             {
                 product.AverageRating = dataTable.AverageRating(product.PartitionKey);
-                product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);    
+                product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
+                //if (dataTable.AverageRating(product.PartitionKey)>0)
+                //{
+                //    product.AverageRating = dataTable.AverageRating(product.PartitionKey);
+                //    product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
+                //}
+                //else
+                //{
+                //    product.AverageRating = 0;
+                //    product.RatingQuantity = 0;
+                //}
+
             }
             return View(products);
         }
@@ -43,7 +54,7 @@ namespace Tresorit.Controllers
                 PartitonKey = partitionkey
             };
 
-            return View("ProductForm",productViewModel);
+            return View("ProductForm", productViewModel);
         }
 
         public IActionResult Save(Product product)
@@ -62,10 +73,6 @@ namespace Tresorit.Controllers
             //    Rating = product.Rating
             //};
 
-            if (product.Review!=null)
-            {
-                //product.Rating = null;
-            }
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
             dataTable.InsertOrMergeProduct(product).Wait();

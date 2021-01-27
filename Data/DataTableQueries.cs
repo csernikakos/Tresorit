@@ -26,6 +26,16 @@ namespace Tresorit.Data
         {
             TableQuery<Product> queryResult = new TableQuery<Product>();
             var itemlist = table.ExecuteQuery(queryResult);
+
+            //var itemListWithoutNulls = new List<Product>();
+            //foreach (var item in itemlist)
+            //{
+            //    if (item.Rating!=null)
+            //    {
+            //        itemListWithoutNulls.Add(item);
+            //    }
+            //}
+
             List<Product> distinct = itemlist.GroupBy(x => x.PartitionKey).Select(g => g.First()).ToList();
             return distinct;
         }
@@ -44,17 +54,23 @@ namespace Tresorit.Data
             decimal sum = 0;
             TableQuery<Product> queryResult = new TableQuery<Product>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
             var itemlist = table.ExecuteQuery(queryResult);
-            if (itemlist.Count()!=0)
-            {
-                foreach (var item in itemlist)
-                {
-                    sum += item.Rating;
-                }
-                result = sum / itemlist.Count();
-                result = Math.Round(result, 1);
-            }            
+            var itemCount = itemlist.Count();
 
-            return result;            
+            foreach (var item in itemlist)
+            {
+                if (item.Rating != null)
+                {
+                    sum += (int)item.Rating;
+                }
+            }
+            if (itemlist.Count()>1)
+            {
+                itemCount = (itemCount - 1);
+            }
+            result = sum / itemCount;
+            result = Math.Round(result, 1);
+
+            return result;
         }
 
         public int RatingQuantity(string partitionkey)

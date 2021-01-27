@@ -11,7 +11,7 @@ namespace Tresorit.Models
     {
         public string Review { get; set; }
 
-        public int Rating { get; set; }
+        public int? Rating { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:N1}")]
         public decimal AverageRating { get; set; }
