@@ -48,23 +48,39 @@ namespace Tresorit.Controllers
 
         public IActionResult Save(Product product)
         {
-            List<Product> products = dataTable.GetPartitionKeyItems(product.PartitionKey);
-            ProductViewModel productViewModel = new ProductViewModel
+            //List<Product> products = dataTable.GetPartitionKeyItems(product.PartitionKey);
+            //ProductViewModel productViewModel = new ProductViewModel
+            //{
+            //    Products = products
+            //};
+
+            ////Guid guid = Guid.NewGuid();
+            //Product insertedProduct = new Product() {
+            //    PartitionKey = product.PartitionKey,
+            //    RowKey = guid.ToString(),
+            //    Review = product.Review,
+            //    Rating = product.Rating
+            //};
+
+            if (product.Review!=null)
             {
-                Products = products
-            };
-
+                //product.Rating = null;
+            }
             Guid guid = Guid.NewGuid();
-            Product insertedProduct = new Product() {
-                PartitionKey = product.PartitionKey,
-                RowKey = guid.ToString(),
-                Review = product.Review,
-                Rating = product.Rating
-            };
-
-            dataTable.InsertOrMergeProduct(insertedProduct).Wait();
-
+            product.RowKey = guid.ToString();
+            dataTable.InsertOrMergeProduct(product).Wait();
             return RedirectToAction("Index", "Home");
+        }
+
+        //public IActionResult SaveNewProduct(Product product)
+        //{
+        //    dataTable.InsertOrMergeProduct(product).Wait();
+        //    return RedirectToAction("Index", "Home");
+        //}
+
+        public IActionResult New()
+        {
+            return View();
         }
 
         public IActionResult Privacy()

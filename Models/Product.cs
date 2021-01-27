@@ -16,7 +16,7 @@ namespace Tresorit.Models
         [DisplayFormat(DataFormatString = "{0:N1}")]
         public decimal AverageRating { get; set; }
 
-        public int RatingQuantity { get; set; }
+        public int? RatingQuantity { get; set; }
         public Product()
         {
         }

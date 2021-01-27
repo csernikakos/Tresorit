@@ -44,12 +44,15 @@ namespace Tresorit.Data
             decimal sum = 0;
             TableQuery<Product> queryResult = new TableQuery<Product>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
             var itemlist = table.ExecuteQuery(queryResult);
-            foreach (var item in itemlist)
+            if (itemlist.Count()!=0)
             {
-                sum += item.Rating;
-            }
-            result = sum / itemlist.Count();
-            result = Math.Round(result, 1);
+                foreach (var item in itemlist)
+                {
+                    sum += item.Rating;
+                }
+                result = sum / itemlist.Count();
+                result = Math.Round(result, 1);
+            }            
 
             return result;            
         }
