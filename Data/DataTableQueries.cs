@@ -8,6 +8,11 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.StorageClient;
 
 namespace Tresorit.Data
 {
@@ -136,18 +141,19 @@ namespace Tresorit.Data
             uploadFileStream.Close();
         }
 
-        public async Task UploadImageToBlobContainer()
+        public async Task UploadImageToBlobContainer(IFormFile file)
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("blobcontainer");
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
+            BlobClient blobClient = containerClient.GetBlobClient("publicblobcontainer");
 
-            string filePath = "E:\\VisualStudioProjects\\_img\\tresorit-logo.png";
-
-            BlobClient blobClient = containerClient.GetBlobClient("blobcontainer");
-            using FileStream uploadFileStream = File.OpenRead(filePath);
+            //string filePath = "E:\\VisualStudioProjects\\_img\\tresorit-logo.png";
+            string currentFilePath = Path.GetFullPath(file.FileName);
+            
+            using FileStream uploadFileStream = File.OpenRead(currentFilePath);
             await blobClient.UploadAsync(uploadFileStream, true);
             uploadFileStream.Close();
-        }
+        }              
 
         public void Upload(IEnumerable<FileInfo> files, string connectionString, string container)
         {
@@ -169,6 +175,60 @@ namespace Tresorit.Data
                     throw;
                 }
             }
+        }
+
+        public async Task CreateBlobNew(IFormFile file)
+        {
+
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
+
+            BlobClient blobClient = containerClient.GetBlobClient("tresoritimg2.png");       
+            
+            //using FileStream uploadFileStream = File.OpenRead(filepath);
+
+            //await blobClient.UploadAsync(uploadFileStream, true);
+            //uploadFileStream.Close();
+
+            var imageInBytes = ConvertImageToByteArray(file);
+        }
+        private byte[] ConvertImageToByteArray(IFormFile image)
+        {
+            byte[] result = null;
+            using(var fileStream = image.OpenReadStream())
+                using(var memoryStream = new MemoryStream())
+            {
+                fileStream.CopyTo(memoryStream);
+                result = memoryStream.ToArray();
+            }
+            return result;
+        }
+
+        private async Task<string> UploadImageByteArry(byte[] imageBytes, string imageName, string contentType)
+        {
+            if (imageBytes==null || imageBytes.Length==0)
+            {
+                return null;
+            }
+            //BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+            //BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
+            //BlobClient blobClient = containerClient.GetBlobClient(imageName);
+
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connString);
+            
+
+            CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
+
+            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("quickstartblobs" + Guid.NewGuid().ToString());
+            await cloudBlobContainer.CreateAsync();
+
+            var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(imageName);
+            cloudBlockBlob.Properties.ContentType = contentType;
+
+            const int byteArrayStartIndex = 0;
+            await cloudBlockBlob.UploadFromStreamAsync(imageBytes, byteArrayStartIndex, imageBytes.Length);
+
         }
 
     }
