@@ -10,11 +10,17 @@ namespace Tresorit.ViewModels
         public IEnumerable<Product> Products { get; set; }
         public string PartitonKey { get; set; }
 
+        [Display(Name ="Description")]
         public string Description { get; set; }
 
         [Required]
         [MaxLength(500)]
+        [Display(Name = "Review Text")]
         public string Review { get; set; }
+
+        [MaxLength(500)]
+        [Display(Name = "Name")]
+        public string Reviewer { get; set; }
 
         public ProductViewModel()
         {            

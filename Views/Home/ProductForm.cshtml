@@ -19,11 +19,6 @@
             </div>
             <div>
                 @Model.Description
-                @*Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
-                pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
-                vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede
-                mollis pretium. Integer tincidunt. Cras dapibu*@
             </div>
             <div style="margin-top: 20px; ">
                 <a asp-action="Index" class="btn btn-primary">Back to List</a>
@@ -39,8 +34,14 @@
                         @if (item.Rating != null)
                         {
                             <div class="container" style="margin-bottom:15px">
-                                <div>@item.Timestamp.ToString("g")</div>
-
+                                @if (item.Reviewer != null)
+                                {
+                                    <div>@item.Reviewer  -  @item.Timestamp.ToString("g")</div>
+                                }
+                                else
+                                {
+                                    <div><i>Anonyums</i> - @item.Timestamp.ToString("g")</div>
+                                }
                                 <div>
                                     @item.Review
                                 </div>
@@ -55,8 +56,8 @@
                                         <span class="far fa-star"></span>
                                     }
                                 </div>
+                                <hr />
                             </div>
-                            <hr />
                         }
                     }
                 </div>
@@ -80,9 +81,17 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
+                        @Html.LabelFor(m => m.Reviewer)
+                        <div class="input-group">
+                            @Html.TextBoxFor(m => m.Reviewer, new { @id = "ReviewerArea", @class = "form-control" })
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Review)
+                        <br />
 
-                        <p>Review text:</p>
-                        @Html.TextAreaFor(m => m.Review, new { @id = "ReviewArea", @class = "form-control", @rows = 5 })
+                        @Html.LabelFor(m => m.Review)
+                        <div class="input-group">
+                            @Html.TextAreaFor(m => m.Review, new { @id = "ReviewArea", @class = "form-control", @rows = 5 })
+                        </div>
                         @Html.ValidationMessageFor(m => m.Review)
                         <br />
                         <p>Select a rating:</p>
@@ -168,6 +177,7 @@
             return false;
         }
         else {
+
             return true;
         }
     }

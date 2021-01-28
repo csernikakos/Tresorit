@@ -81,7 +81,15 @@ namespace Tresorit.Controllers
             //dataTable.Upload(files, config["AzureStorage:ConnectionString"], config["AzureStorage:Container"]);
 
             //return RedirectToAction("Index", "Home");
-            return View("ProductForm", ViewModelData(product.PartitionKey));
+            if (product.Rating == null && product.Review == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.Clear();
+                return View("ProductForm", ViewModelData(product.PartitionKey));
+            }            
         }
 
         public ProductViewModel ViewModelData(string partitionKey)
@@ -93,6 +101,7 @@ namespace Tresorit.Controllers
                 if (product.Rating == null && product.Review == null)
                 {
                     description = product.Description;
+
                 }
             }
             ProductViewModel productViewModel = new ProductViewModel

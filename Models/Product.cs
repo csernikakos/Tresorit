@@ -36,6 +36,9 @@ namespace Tresorit.Models
         [JsonProperty(PropertyName = "description")]
         public string Description { get; set; }
 
+        [Display(Name = "Reviewer")]
+        [JsonProperty(PropertyName = "reviewer")]
+        public string Reviewer { get; set; }
         public Product()
         {
         }
