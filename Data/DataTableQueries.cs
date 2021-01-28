@@ -7,6 +7,7 @@ using Tresorit.Models;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Tresorit.Data
 {
@@ -26,6 +27,7 @@ namespace Tresorit.Data
             table = tableClient.GetTableReference(tableName);
         }
 
+        [HttpGet]
         public List<Product> GetUniquePartitionKeys()
         {
             TableQuery<Product> queryResult = new TableQuery<Product>();
@@ -35,6 +37,7 @@ namespace Tresorit.Data
             return distinct;
         }
 
+        [HttpGet]
         public List<Product> GetPartitionKeyItems(string partitionkey)
         {
             TableQuery<Product> queryResult = new TableQuery<Product>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey)); 
@@ -83,6 +86,7 @@ namespace Tresorit.Data
             return sum;
         }
 
+        [HttpPost]
         public async Task<Product> InsertOrMergeProduct(Product product)
         {
             if (product==null)
@@ -105,6 +109,7 @@ namespace Tresorit.Data
             }
         }
 
+        [HttpPost]
         public async Task CreateBlob()
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
@@ -112,6 +117,7 @@ namespace Tresorit.Data
             BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containername);
         }
 
+        [HttpPost]
         public async Task UploadToBlobContainer()
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(connString);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,15 +22,6 @@ namespace Tresorit.Controllers
         {
             _logger = logger;
             dataTable = new DataTableQueries();
-
-            var config = GetConfiguration();
-            var files = GetFiles(config["AzureStorage:SourceFolder"]);
-            foreach (var item in files)
-            {
-                Console.WriteLine(item.Name);
-            }
-            dataTable.Upload(files, config["AzureStorage:ConnectionString"], config["AzureStorage:Container"]);
-            //dataTable.UploadImageToBlobContainer().Wait();
         }
         static IConfigurationRoot GetConfiguration()
         {
@@ -70,6 +62,20 @@ namespace Tresorit.Controllers
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
             dataTable.InsertOrMergeProduct(product).Wait();
+
+            if (product.Rating==0)
+            {
+
+            }
+
+            //var config = GetConfiguration();
+            //var files = GetFiles(config["AzureStorage:SourceFolder"]);
+            //foreach (var item in files)
+            //{
+            //    Console.WriteLine(item.Name);
+            //}
+            //dataTable.Upload(files, config["AzureStorage:ConnectionString"], config["AzureStorage:Container"]);
+
             return RedirectToAction("Index", "Home");
         }
 

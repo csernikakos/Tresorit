@@ -9,40 +9,62 @@
 }
 
 
-
-
-<h2>@Model.PartitonKey reviews:</h2>
-<div id="reviewsDivs">
-    @foreach (var item in Model.Products)
-    {
-        @if (item.Rating != null)
-        {
+<div class="container">
+    <div class="row">
+        <div class="col-md-3" style="float:left">
+            <img src="https://cdn.technologyadvice.com/wp-content/uploads/2019/01/tresorit-logo-300x300.png" width="200" height="200" alt="...">
             <div>
-                <div>
-                    @item.Review - @item.Timestamp.ToString("g")
-                </div>
-                <div>
-                    @for (int i = 0; i < item.Rating; i++)
+                <h5>@Model.PartitonKey Descrtiption</h5>
+            </div>
+            <div>
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+                Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
+                pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
+                vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede
+                mollis pretium. Integer tincidunt. Cras dapibu
+            </div>
+            <div style="margin-top: 20px; ">
+                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div>
+                <h5>@Model.PartitonKey reviews:</h5>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New Review</button>
+                <div id="reviewsDivs">
+                    @foreach (var item in Model.Products)
                     {
-                        <span class="fas fa-star"></span>
-                    }
-                    @for (int i = (int)item.Rating; i < 5; i++)
-                    {
-                        <span class="far fa-star"></span>
+                        @if (item.Rating != null)
+                        {
+                            <div>
+                                <div>
+                                    @item.Review - @item.Timestamp.ToString("g")
+                                </div>
+                                <div>
+                                    @for (int i = 0; i < item.Rating; i++)
+                                    {
+                                        <span class="fas fa-star"></span>
+                                    }
+                                    @for (int i = (int)item.Rating; i < 5; i++)
+                                    {
+                                        <span class="far fa-star"></span>
+                                    }
+                                </div>
+                            </div>
+                        }
                     }
                 </div>
             </div>
-        }
-    }
+            <button id="toggleButton" class="btn btn-link">Show all</button>
+        </div>
+    </div>
 </div>
 
-<button id="toggleButton" class="btn btn-link">Show all</button>
 
-
-@using (Html.BeginForm("Save", "Home", new { @onsubmit = "return VerifyRating()" }))
+@*@using (Html.BeginForm("Save", "Home", new { @onsubmit = "return VerifyRating()" }))*@
+@using (Html.BeginForm("Save", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return VerifyReview()" }))
 {
     <div>
-
         <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
@@ -53,7 +75,9 @@
                     </div>
                     <div class="modal-body">
 
-                        @Html.TextAreaFor(m => m.Review, new { @class = "form-control", @rows = 5 })
+
+                        @Html.TextAreaFor(m => m.Review, new { @id = "ReviewArea", @class = "form-control", @rows = 5 })
+                        @Html.ValidationMessageFor(m => m.Review)
                         <br />
                         <p>Select a rating:</p>
                         <div onmouseout="RatingSelected()">
@@ -74,19 +98,8 @@
                 </div>
             </div>
         </div>
-
-
         @Html.Hidden("PartitionKey", Model.PartitonKey)
-
     </div>
-    <div>
-        @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@
-        <a asp-action="Index" class="btn btn-light">Back to List</a>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-            Add Review
-        </button>
-    </div>
-
 }
 
 
@@ -95,17 +108,16 @@
     $(document).ready(function () {
         var toggleDivs = function () {
             $("#reviewsDivs").each(function () {
-                $(this).children('div').toggle().filter(':lt(5)').show();                
+                $(this).children('div').toggle().filter(':lt(5)').show();
             });
         }
-        console.log($("#reviewDivs").children.length);
+
         toggleDivs();
 
         $("#toggleButton").click(function () {
             $(this).text() === 'Show all' ? $(this).text('Show less') : $(this).text('Show all');
             toggleDivs();
         });
-
     });
 
     function RateOut(rating) {
@@ -133,11 +145,24 @@
             $("#span" + i).attr('class', 'fas fa-star');
         }
     }
-    function VerifyRating() {           // !!!!!!!!!!!!!!!!!!!!!!!!!
+    function VerifyReview() {
         var rating = $("#lblRating").val();
+        var textboxLength = $("#ReviewArea").val().length;
+
         if (rating == "0") {
-            alert("Please select rating");
-            return false
+            alert("Please select a rating!")
+            return false;
+        }
+        else if (textboxLength == "0") {
+            alert("The review textbox can't be empty!")
+            return false;
+        }
+        else if (textboxLength > 500) {
+            alert("The review can be only 500 characters long!")
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
