@@ -44,17 +44,27 @@ namespace Tresorit.Controllers
             return View(products);
         }
 
-        public IActionResult ProductForm(string partitionkey)
+        public IActionResult ProductForm(string partitionKey)
         {
-            List<Product> products = dataTable.GetPartitionKeyItems(partitionkey);
+            //List<Product> products = dataTable.GetPartitionKeyItems(partitionKey);
+            //string description="";
+            //foreach (var product in products)
+            //{
+            //    if (product.Rating==null&&product.Review==null)
+            //    {
+            //        description = product.Description;
+            //    }
+            //}
+            //ProductViewModel productViewModel = new ProductViewModel
+            //{
+            //    Products = products,
+            //    PartitonKey = partitionKey,
+            //    Description = description             
+            //};
+            //return View("ProductForm", productViewModel);
 
-            ProductViewModel productViewModel = new ProductViewModel
-            {
-                Products = products,
-                PartitonKey = partitionkey
-            };
+            return View("ProductForm", ViewModelData(partitionKey));
 
-            return View("ProductForm", productViewModel);
         }
 
         public IActionResult Save(Product product)
@@ -62,12 +72,6 @@ namespace Tresorit.Controllers
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
             dataTable.InsertOrMergeProduct(product).Wait();
-
-            if (product.Rating==0)
-            {
-
-            }
-
             //var config = GetConfiguration();
             //var files = GetFiles(config["AzureStorage:SourceFolder"]);
             //foreach (var item in files)
@@ -76,7 +80,29 @@ namespace Tresorit.Controllers
             //}
             //dataTable.Upload(files, config["AzureStorage:ConnectionString"], config["AzureStorage:Container"]);
 
-            return RedirectToAction("Index", "Home");
+            //return RedirectToAction("Index", "Home");
+            return View("ProductForm", ViewModelData(product.PartitionKey));
+        }
+
+        public ProductViewModel ViewModelData(string partitionKey)
+        {
+            List<Product> products = dataTable.GetPartitionKeyItems(partitionKey);
+            string description = "";
+            foreach (var product in products)
+            {
+                if (product.Rating == null && product.Review == null)
+                {
+                    description = product.Description;
+                }
+            }
+            ProductViewModel productViewModel = new ProductViewModel
+            {
+                Products = products,
+                PartitonKey = partitionKey,
+                Description = description
+            };
+
+            return productViewModel;
         }
 
         public IActionResult New()

@@ -32,6 +32,10 @@ namespace Tresorit.Models
         [JsonProperty(PropertyName = "imgPath")]
         public string ImgPath { get; set; }
 
+        [Display(Name ="Description")]
+        [JsonProperty(PropertyName = "description")]
+        public string Description { get; set; }
+
         public Product()
         {
         }

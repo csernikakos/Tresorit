@@ -5,20 +5,23 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>New</h1>
-
-<h4>Product</h4>
+<h2>New Product</h2>
 <hr />
 @using (Html.BeginForm("Save", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return Verify()" }))
 {
     <div class="row">
         <div class="col-md-4">
             <form asp-action="New">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
                 <div class="form-group">
                     <label class="control-label">Product Name</label>
-                    @Html.TextBoxFor(m => m.PartitionKey, new { @id="ProductNameText", @class = "form-control" })
+                    @Html.TextBoxFor(m => m.PartitionKey, new { @id = "ProductNameText", @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m=>m.Description)
+                    <div class="input-group">
+                        @Html.TextAreaFor(m=>m.Description, new { @id="ProductDescriptionText", @class= "form-control"})
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -27,16 +30,13 @@
                         @Html.TextBoxFor(m => m.ImgPath, "", new { type = "file" })
                     </div>
                 </div>
-
+                <hr />
                 <div class="form-group">
+                    <a asp-action="Index" class="btn btn-light">Back to List</a>
                     <input type="submit" value="Create" class="btn btn-primary" />
                 </div>
             </form>
         </div>
-    </div>
-
-    <div>
-        <a asp-action="Index">Back to List</a>
     </div>
 }
 @section Scripts {
@@ -44,10 +44,11 @@
 }
 <script type="text/javascript">
     function Verify() {
-        var textboxLength = $("#ProductNameText").val().length;
+        var textboxNameLength = $("#ProductNameText").val().length;
+        var textboxDescriptionLength = $("#ProductDescriptionText").val().length;
 
-        if (textboxLength == "0") {
-            alert("Please give a Product Name!")
+        if (textboxLength == "0" || textboxDescriptionLength=="0") {
+            alert("Please fill out all of the areas!")
             return false;
         }
         else {

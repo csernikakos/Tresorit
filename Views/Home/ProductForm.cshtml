@@ -14,14 +14,16 @@
         <div class="col-md-3" style="float:left">
             <img src="https://cdn.technologyadvice.com/wp-content/uploads/2019/01/tresorit-logo-300x300.png" width="200" height="200" alt="...">
             <div>
-                <h5>@Model.PartitonKey Descrtiption</h5>
+                <h3>@Model.PartitonKey</h3>
+                <h5>Description:</h5>
             </div>
             <div>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+                @Model.Description
+                @*Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
                 Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
                 pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
                 vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede
-                mollis pretium. Integer tincidunt. Cras dapibu
+                mollis pretium. Integer tincidunt. Cras dapibu*@
             </div>
             <div style="margin-top: 20px; ">
                 <a asp-action="Index" class="btn btn-primary">Back to List</a>
@@ -29,17 +31,20 @@
         </div>
         <div class="col-md-7">
             <div>
-                <h5>@Model.PartitonKey reviews:</h5>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New Review</button>
-                <div id="reviewsDivs">
+                <h5>Reviews:</h5>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New Review</button>
+                <div id="reviewsDivs" style="margin-top:15px">
                     @foreach (var item in Model.Products)
                     {
                         @if (item.Rating != null)
                         {
-                            <div>
+                            <div class="container" style="margin-bottom:15px">
+                                <div>@item.Timestamp.ToString("g")</div>
+
                                 <div>
-                                    @item.Review - @item.Timestamp.ToString("g")
+                                    @item.Review
                                 </div>
+
                                 <div>
                                     @for (int i = 0; i < item.Rating; i++)
                                     {
@@ -51,6 +56,7 @@
                                     }
                                 </div>
                             </div>
+                            <hr />
                         }
                     }
                 </div>
@@ -75,7 +81,7 @@
                     </div>
                     <div class="modal-body">
 
-
+                        <p>Review text:</p>
                         @Html.TextAreaFor(m => m.Review, new { @id = "ReviewArea", @class = "form-control", @rows = 5 })
                         @Html.ValidationMessageFor(m => m.Review)
                         <br />
