@@ -11,8 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
 
 namespace Tresorit.Data
 {
@@ -20,7 +18,7 @@ namespace Tresorit.Data
     {
         string tableName = "TresoritTable";
         string connString = "DefaultEndpointsProtocol=https;AccountName=tresoritstrorageacc;AccountKey=tq+qxPI6OO2QYMlCCSzveMTSHz+UJJVSUt/8/yvX9WVjE0umZJgaxbAVEZMeqlWReDOP20YlFXxteHd/GTD+FA==;EndpointSuffix=core.windows.net";
-
+        CloudBlob blob;
         CloudTable table;
 
         public DataTableQueries()
@@ -205,30 +203,21 @@ namespace Tresorit.Data
             return result;
         }
 
-        private async Task<string> UploadImageByteArry(byte[] imageBytes, string imageName, string contentType)
+        [HttpPost]
+        public async Task<string> Post(IFormFile file)
         {
-            if (imageBytes==null || imageBytes.Length==0)
+            BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
+            await containerClient.CreateIfNotExistsAsync();
+            BlobClient blobClient = containerClient.GetBlobClient(file.FileName);
+            BlobHttpHeaders httpHeaders = new BlobHttpHeaders()
             {
-                return null;
-            }
-            //BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-            //BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
-            //BlobClient blobClient = containerClient.GetBlobClient(imageName);
+                ContentType = file.ContentType
+            };
 
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(connString);
-            
+            await blobClient.UploadAsync(file.OpenReadStream(), httpHeaders);
 
-            CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
-
-            CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("quickstartblobs" + Guid.NewGuid().ToString());
-            await cloudBlobContainer.CreateAsync();
-
-            var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(imageName);
-            cloudBlockBlob.Properties.ContentType = contentType;
-
-            const int byteArrayStartIndex = 0;
-            await cloudBlockBlob.UploadFromStreamAsync(imageBytes, byteArrayStartIndex, imageBytes.Length);
-
+            return "OK";
         }
 
     }

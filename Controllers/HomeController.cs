@@ -72,7 +72,7 @@ namespace Tresorit.Controllers
 
         }
 
-        public IActionResult Save(Product product, IFormFile file)
+        public IActionResult Save(Product product, List<IFormFile> files)
         {
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
@@ -80,6 +80,10 @@ namespace Tresorit.Controllers
 
             if (product.Rating == null && product.Review == null)
             {
+                foreach (var file in files)
+                {
+                    dataTable.Post(file).Wait();
+                }
                 return RedirectToAction("Index", "Home");
             }
             else
