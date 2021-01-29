@@ -78,7 +78,14 @@ namespace Tresorit.Controllers
             else
             {
                 ModelState.Clear();
-                product.ImageName = dataTable.GetImageName(product.PartitionKey);
+                if (files.Count() == 0)
+                {
+                    product.ImageName = null;
+                }
+                else
+                {
+                    product.ImageName = dataTable.GetImageName(product.PartitionKey);
+                }                
                 dataTable.InsertOrMergeProduct(product).Wait();
                 return View("ProductForm", ViewModelData(product.PartitionKey));
             }            
