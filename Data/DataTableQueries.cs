@@ -28,10 +28,10 @@ namespace Tresorit.Data
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
             table = tableClient.GetTableReference(tableName);
         }
-        static IConfigurationRoot GetConfiguration()
-        {
-            return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
-        }
+        //static IConfigurationRoot GetConfiguration()
+        //{
+        //    return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
+        //}
 
         [HttpGet]
         public List<Product> GetUniquePartitionKeys()
@@ -135,7 +135,7 @@ namespace Tresorit.Data
         [HttpGet]
         public string GetImageName(string partitionKey)
         {
-            var imageName = "";
+            var imageName = "";            
             var productList = GetPartitionKeyItems(partitionKey);
             foreach (var product in productList)
             {

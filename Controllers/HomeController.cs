@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Tresorit.Controllers.Api;
 using Tresorit.Data;
 using Tresorit.Models;
 using Tresorit.ViewModels;
@@ -19,9 +20,9 @@ namespace Tresorit.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        DataTableQueries dataTable;
+        private DataTableQueries dataTable;
         private readonly IConfiguration _configuration;
-
+        private HomeApiController apiController;
 
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
@@ -29,27 +30,20 @@ namespace Tresorit.Controllers
             _configuration = configuration;
             var connectionString = _configuration.GetConnectionString("StorageAccount");
             dataTable = new DataTableQueries(connectionString);
-        }            
+            apiController = new HomeApiController(_configuration);
+        }
 
-        [HttpGet]
         public IActionResult Index()
-        {
-            List<Product> products = dataTable.GetUniquePartitionKeys();
-            foreach (var product in products)
-            {
-                product.AverageRating = dataTable.AverageRating(product.PartitionKey);
-                product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
-            }
+        {           
+            var products = apiController.GetProductTypes();
             return View(products);
         }
 
-        [HttpGet]
         public IActionResult ProductForm(string partitionKey)
         {            
             return View("ProductForm", ViewModelData(partitionKey));
         }
 
-        [HttpPost]
         public IActionResult Save(Product product, List<IFormFile> files)
         {
             Guid guid = Guid.NewGuid();
@@ -84,7 +78,7 @@ namespace Tresorit.Controllers
                 }
                 if(product.Rating != 0 && product.Review!=null)
                 {
-                    product.ImageName = dataTable.GetImageName(product.PartitionKey);
+                    product.ImageName = apiController.GetImageName(product.PartitionKey);
                 }                
                 dataTable.InsertOrMergeProduct(product).Wait();
                 return View("ProductForm", ViewModelData(product.PartitionKey));
@@ -93,7 +87,7 @@ namespace Tresorit.Controllers
 
         public ProductViewModel ViewModelData(string partitionKey)
         {
-            List<Product> products = dataTable.GetPartitionKeyItems(partitionKey);
+            var products = apiController.GetReviewsByProduct(partitionKey);
             string description = "";
             string imageName = "";
             foreach (var product in products)
@@ -114,7 +108,7 @@ namespace Tresorit.Controllers
 
             return productViewModel;
         }
-        [HttpGet]
+
         public IActionResult New()
         {
             return View();
