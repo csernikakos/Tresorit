@@ -27,18 +27,13 @@ namespace Tresorit.Data
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
             table = tableClient.GetTableReference(tableName);
-        }
-        //static IConfigurationRoot GetConfiguration()
-        //{
-        //    return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
-        //}
+        }       
 
         [HttpGet]
         public List<Product> GetUniquePartitionKeys()
         {
             TableQuery<Product> queryResult = new TableQuery<Product>();
             var itemlist = table.ExecuteQuery(queryResult);
-
             List<Product> distinct = itemlist.GroupBy(x => x.PartitionKey).Select(g => g.First()).ToList();
             return distinct;
         }
