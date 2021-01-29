@@ -16,11 +16,11 @@
                     <div class="thumbnail">
                         @if (item.ImageName != null)
                         {
-                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@item.ImageName" width="200" height="200" alt="...">
+                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@item.ImageName" style="object-fit:contain" width="200" height="200" alt="...">
                         }
                         else
                         {
-                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" width="200" height="200" alt="...">
+                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" style="object-fit:contain" width="200" height="200" alt="...">
                         }
                         <div class="caption">
                             <h3>@item.PartitionKey</h3>
