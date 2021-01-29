@@ -82,7 +82,7 @@ namespace Tresorit.Controllers
                 {
                     product.ImageName = null;
                 }
-                else
+                if(product.Rating != 0 && product.Review!=null)
                 {
                     product.ImageName = dataTable.GetImageName(product.PartitionKey);
                 }                
