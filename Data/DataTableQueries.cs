@@ -17,17 +17,20 @@ namespace Tresorit.Data
     public class DataTableQueries
     {
         string tableName = "TresoritTable";
-        string connString = "DefaultEndpointsProtocol=https;AccountName=tresoritstrorageacc;AccountKey=tq+qxPI6OO2QYMlCCSzveMTSHz+UJJVSUt/8/yvX9WVjE0umZJgaxbAVEZMeqlWReDOP20YlFXxteHd/GTD+FA==;EndpointSuffix=core.windows.net";
-        CloudBlob blob;
+        string connString = "";
         CloudTable table;
-
-        public DataTableQueries()
+        public DataTableQueries(string connectionString)
         {
+            connString = connectionString;
             CloudStorageAccount storageAccount;
             storageAccount = CloudStorageAccount.Parse(connString);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
             table = tableClient.GetTableReference(tableName);
+        }
+        static IConfigurationRoot GetConfiguration()
+        {
+            return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
         }
 
         [HttpGet]
@@ -142,99 +145,7 @@ namespace Tresorit.Data
                 }
             }
             return imageName;
-        }
-        //[HttpPost]
-        //public async Task CreateBlob()
-        //{
-        //    BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-        //    string containername = "blobcontainer2" + Guid.NewGuid().ToString();
-        //    BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containername);
-        //}
-
-        //[HttpPost]
-        //public async Task UploadToBlobContainer()
-        //{
-        //    BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-        //    string containername = "blobcontainer" + Guid.NewGuid().ToString();
-        //    BlobContainerClient containerClient = await blobServiceClient.CreateBlobContainerAsync(containername);
-
-        //    string localPath = "E://";
-        //    string fileName = "blobupload.txt";
-        //    string localFilePath = Path.Combine(localPath, fileName);
-
-        //    await File.WriteAllTextAsync(localFilePath, "Helo");
-
-        //    BlobClient blobClient = containerClient.GetBlobClient(fileName);
-        //    using FileStream uploadFileStream = File.OpenRead(localFilePath);
-        //    await blobClient.UploadAsync(uploadFileStream, true);
-        //    uploadFileStream.Close();
-        //}
-
-        //public async Task UploadImageToBlobContainer(IFormFile file)
-        //{
-        //    BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-        //    BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
-        //    BlobClient blobClient = containerClient.GetBlobClient("publicblobcontainer");
-
-        //    //string filePath = "E:\\VisualStudioProjects\\_img\\tresorit-logo.png";
-        //    string currentFilePath = Path.GetFullPath(file.FileName);
-
-        //    using FileStream uploadFileStream = File.OpenRead(currentFilePath);
-        //    await blobClient.UploadAsync(uploadFileStream, true);
-        //    uploadFileStream.Close();
-        //}              
-
-        //public void Upload(IEnumerable<FileInfo> files, string connectionString, string container)
-        //{
-        //    var containerClient = new BlobContainerClient(connectionString, container);
-
-        //    foreach (var file in files)
-        //    {
-        //        try
-        //        {
-        //            var blobClient = containerClient.GetBlobClient(file.Name);
-        //            using(var fileStream = File.OpenRead(file.FullName))
-        //            {
-        //                blobClient.Upload(fileStream,overwrite:true);
-        //            }
-        //        }
-        //        catch (Exception)
-        //        {
-
-        //            throw;
-        //        }
-        //    }
-        //}
-
-        //public async Task CreateBlobNew(IFormFile file)
-        //{
-
-        //    BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
-
-        //    BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");
-
-        //    BlobClient blobClient = containerClient.GetBlobClient("tresoritimg2.png");       
-
-        //    //using FileStream uploadFileStream = File.OpenRead(filepath);
-
-        //    //await blobClient.UploadAsync(uploadFileStream, true);
-        //    //uploadFileStream.Close();
-
-        //    var imageInBytes = ConvertImageToByteArray(file);
-        //}
-        //private byte[] ConvertImageToByteArray(IFormFile image)
-        //{
-        //    byte[] result = null;
-        //    using(var fileStream = image.OpenReadStream())
-        //        using(var memoryStream = new MemoryStream())
-        //    {
-        //        fileStream.CopyTo(memoryStream);
-        //        result = memoryStream.ToArray();
-        //    }
-        //    return result;
-        //}
-
-
+        }        
 
     }
 }

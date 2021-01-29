@@ -20,22 +20,18 @@ namespace Tresorit.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         DataTableQueries dataTable;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
-            dataTable = new DataTableQueries();
-        }
-        static IConfigurationRoot GetConfiguration()
-        {
-            return new ConfigurationBuilder().SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName).AddJsonFile("appsettings.json").Build();
-        }
+            _configuration = configuration;
+            var connectionString = _configuration.GetConnectionString("StorageAccount");
+            dataTable = new DataTableQueries(connectionString);
+        }            
 
-        static IEnumerable<FileInfo> GetFiles(string sourceFolder)
-        { 
-            return new DirectoryInfo(sourceFolder).GetFiles().Where(f => !f.Attributes.HasFlag(FileAttributes.Hidden));
-        }        
-
+        [HttpGet]
         public IActionResult Index()
         {
             List<Product> products = dataTable.GetUniquePartitionKeys();
@@ -47,11 +43,13 @@ namespace Tresorit.Controllers
             return View(products);
         }
 
+        [HttpGet]
         public IActionResult ProductForm(string partitionKey)
         {            
             return View("ProductForm", ViewModelData(partitionKey));
         }
 
+        [HttpPost]
         public IActionResult Save(Product product, List<IFormFile> files)
         {
             Guid guid = Guid.NewGuid();
@@ -109,13 +107,8 @@ namespace Tresorit.Controllers
 
             return productViewModel;
         }
-
+        [HttpGet]
         public IActionResult New()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
@@ -125,7 +118,6 @@ namespace Tresorit.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
        
     }
 }
