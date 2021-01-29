@@ -12,7 +12,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-3" style="float:left">
-            <img src="https://cdn.technologyadvice.com/wp-content/uploads/2019/01/tresorit-logo-300x300.png" width="200" height="200" alt="...">
+            @if (Model.ImageName != null)
+            {
+                <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@Model.ImageName" width="200" height="200" alt="...">
+            }
+            else
+            {
+                <img src="https://cdn.technologyadvice.com/wp-content/uploads/2019/01/tresorit-logo-300x300.png" width="200" height="200" alt="...">
+            }
             <div>
                 <h3>@Model.PartitonKey</h3>
                 <h5>Description:</h5>
@@ -26,7 +33,7 @@
         </div>
         <div class="col-md-7">
             <div>
-                <div >
+                <div>
                     <h5>Reviews:</h5>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New Review</button>
                 </div>
@@ -34,33 +41,33 @@
                 <div id="reviewsDivs" style="margin-top:15px">
                     @foreach (var item in Model.Products)
                     {
-                    @if (item.Rating != null)
+                        @if (item.Rating != null)
                         {
-                    <div class="container" style="margin-bottom:15px">
-                        @if (item.Reviewer != null)
+                            <div class="container" style="margin-bottom:15px">
+                                @if (item.Reviewer != null)
                                 {
-                        <div>@item.Reviewer  -  @item.Timestamp.ToString("g")</div>
+                                    <div>@item.Reviewer  -  @item.Timestamp.ToString("g")</div>
                                 }
                                 else
                                 {
-                        <div><i>Anonyums</i> - @item.Timestamp.ToString("g")</div>
+                                    <div><i>Anonyums</i> - @item.Timestamp.ToString("g")</div>
                                 }
-                        <div>
-                            @item.Review
-                        </div>
+                                <div>
+                                    @item.Review
+                                </div>
 
-                        <div>
-                            @for (int i = 0; i < item.Rating; i++)
+                                <div>
+                                    @for (int i = 0; i < item.Rating; i++)
                                     {
-                            <span class="fas fa-star"></span>
+                                        <span class="fas fa-star"></span>
                                     }
-                            @for (int i = (int)item.Rating; i < 5; i++)
+                                    @for (int i = (int)item.Rating; i < 5; i++)
                                     {
-                            <span class="far fa-star"></span>
+                                        <span class="far fa-star"></span>
                                     }
-                        </div>
-                        <hr />
-                    </div>
+                                </div>
+                                <hr />
+                            </div>
                         }
                     }
                 </div>
@@ -71,7 +78,6 @@
 </div>
 
 
-@*@using (Html.BeginForm("Save", "Home", new { @onsubmit = "return VerifyRating()" }))*@
 @using (Html.BeginForm("Save", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return VerifyReview()" }))
 {
     <div>

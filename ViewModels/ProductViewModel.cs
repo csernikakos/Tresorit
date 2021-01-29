@@ -22,6 +22,8 @@ namespace Tresorit.ViewModels
         [Display(Name = "Name")]
         public string Reviewer { get; set; }
 
+        public string ImageName { get; set; }
+
         public ProductViewModel()
         {            
         }

@@ -28,9 +28,8 @@ namespace Tresorit.Models
         [JsonProperty(PropertyName = "ratingQuantity")]
         public int? RatingQuantity { get; set; }
 
-        [Display(Name ="Upload File")]
-        [JsonProperty(PropertyName = "imgPath")]
-        public string ImgPath { get; set; }
+        [JsonProperty(PropertyName = "imageName")]
+        public string ImageName { get; set; }
 
         [Display(Name ="Description")]
         [JsonProperty(PropertyName = "description")]
