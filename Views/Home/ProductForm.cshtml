@@ -11,31 +11,33 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3" style="float:left">
-            @if (Model.ImageName != null)
-            {
-                <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@Model.ImageName" style="object-fit:contain" width="200" height="200" alt="...">
-            }
-            else
-            {
-                <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" style="object-fit:contain" width="200" height="200" alt="...">
-            }
-            <div>
-                <h3>@Model.PartitonKey</h3>
-                <h5>Description:</h5>
-            </div>
-            <div>
-                @Model.Description
-            </div>
-            <div style="margin-top: 20px; ">
-                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        <div class="col-md-3">
+            <div class="shadow p-3 mb-5 details-card" style="border-radius: 5px; background:#fff">
+                @if (Model.ImageName != null)
+                {
+                    <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@Model.ImageName" class="mx-auto mb-3 d-block" alt="...">
+                }
+                else
+                {
+                    <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" class="mx-auto mb-3 d-block" alt="...">
+                }
+                <div>
+                    <h2>@Model.PartitonKey</h2>
+                    <p>Description:</p>
+                </div>
+                <div>
+                    @Model.Description
+                </div>
+                <div style="margin-top: 20px; ">
+                    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                </div>
             </div>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-9">
             <div>
                 <div>
                     <h5>Reviews:</h5>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">New Review</button>
+                    <button type="button" class="btn btn-info shadow" data-toggle="modal" data-target="#myModal">New Review</button>
                 </div>
                 <hr />
                 <div id="reviewsDivs" style="margin-top:15px">
@@ -43,7 +45,7 @@
                     {
                         @if (item.Rating != null)
                         {
-                            <div class="container" style="margin-bottom:15px">
+                            <div  style="margin-bottom:15px">
                                 @if (item.Reviewer != null)
                                 {
                                     <div>@item.Reviewer  -  @item.Timestamp.ToString("g")</div>

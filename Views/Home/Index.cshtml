@@ -3,36 +3,40 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="col-md-2" style="margin-top: 25px; margin-bottom:25px; margin-left:15px">
-    @Html.ActionLink("New Product", "New", "Home", null, new { @class = "btn btn-primary" })
+<div class="row">
+    <div class="col my-1">
+        @*<h1>Products</h1>*@
+        @Html.ActionLink("New Product", "New", "Home", null, new { @class = "btn btn-info shadow" })
+    </div>
 </div>
 <hr />
-<div class="container">
-    <div class="container-fluid">
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-3">
-                    <div class="thumbnail">
-                        @if (item.ImageName != null)
-                        {
-                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@item.ImageName" style="object-fit:contain" width="200" height="200" alt="...">
-                        }
-                        else
-                        {
-                            <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" style="object-fit:contain" width="200" height="200" alt="...">
-                        }
-                        <div class="caption">
-                            <h3>@item.PartitionKey</h3>
-                            <h5>@item.AverageRating<i class="far fa-star" aria-hidden="true"></i> (@item.RatingQuantity reviews)</h5>
-                            <p>
-                                <a href="#" class="btn btn-secondary" role="button">Add to Cart</a>
-                                @Html.ActionLink("Details", "ProductForm", "Home", new { item.PartitionKey }, new { @class = "btn btn-primary" })
-                            </p>
-                        </div>
+
+<div class="row justify-content-center justify-content-md-start">
+    @foreach (var item in Model)
+    {
+        <div class="col-auto col-md-6 col-lg-4 col-xl-3 mb-4">
+            <div class="thumbnail shadow p-3" style="border-radius: 5px; background:#fff">
+                @if (item.ImageName != null)
+                {
+                    <div class="image-wrapper mx-auto mb-3">
+                        <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@item.ImageName" class="d-block" alt="@item.PartitionKey">
+                    </div>
+                }
+                else
+                {
+                    <div class="image-wrapper mx-auto mb-3">
+                        <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/tresorit-logo.png" class="mx-auto mb-3 d-block" alt="@item.PartitionKey">
+                    </div>
+                }
+                <div class="caption">
+                    <h3>@item.PartitionKey</h3>
+                    <h5>@item.AverageRating<i class="fas fa-star" aria-hidden="true"></i> (@item.RatingQuantity reviews)</h5>
+                    <div class="mt-3 d-flex justify-content-between">
+                        <a href="#" class="btn btn-secondary w-50 mw-50 mr-1 px-1" role="button">Add to Cart</a>
+                        @Html.ActionLink("Details", "ProductForm", "Home", new { item.PartitionKey }, new { @class = "btn btn-primary w-50 mw-50 ml-1 px-1" })
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    </div>
+    }
 </div>
