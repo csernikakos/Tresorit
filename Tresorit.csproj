@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Product\**" />
+    <Content Remove="Views\Product\**" />
+    <EmbeddedResource Remove="Views\Product\**" />
+    <None Remove="Views\Product\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\Api\ProductApiController.cs" />
+    <Compile Remove="Controllers\ProductController.cs" />
     <Compile Remove="Models\FileEntity.cs" />
   </ItemGroup>
 

@@ -14,12 +14,12 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Tresorit.Data
 {
-    public class DataTableQueries
+    public class DataQueries
     {
         string tableName = "TresoritTable";
         string connString = "";
         CloudTable table;
-        public DataTableQueries(string connectionString)
+        public DataQueries(string connectionString)
         {
             connString = connectionString;
             CloudStorageAccount storageAccount;

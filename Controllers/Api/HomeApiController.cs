@@ -14,30 +14,30 @@ namespace Tresorit.Controllers.Api
     [ApiController]
     public class HomeApiController : ControllerBase
     {
-        DataTableQueries dataTable;
+        DataQueries dataQueries;
         private readonly IConfiguration _configuration;
         public HomeApiController(IConfiguration configuration)
         {            
             _configuration = configuration;
             var connectionString = _configuration.GetConnectionString("StorageAccount");
-            dataTable = new DataTableQueries(connectionString);
+            dataQueries = new DataQueries(connectionString);
         }
 
         [HttpGet("products/types")]
         public IEnumerable<Product> GetProductTypes()
         {
-            List<Product> products = dataTable.GetUniquePartitionKeys();
+            List<Product> products = dataQueries.GetUniquePartitionKeys();
             foreach (var product in products)
             {
-                product.AverageRating = dataTable.AverageRating(product.PartitionKey);
-                product.RatingQuantity = dataTable.RatingQuantity(product.PartitionKey);
+                product.AverageRating = dataQueries.AverageRating(product.PartitionKey);
+                product.RatingQuantity = dataQueries.RatingQuantity(product.PartitionKey);
             }
             return products;
         }
         [HttpGet("products/{partitionKey}")]
         public IEnumerable<Product> GetReviewsByProduct(string partitionkey)
         {
-            List<Product> products = dataTable.GetPartitionKeyItems(partitionkey);
+            List<Product> products = dataQueries.GetPartitionKeyItems(partitionkey);
             return products;
         }
 

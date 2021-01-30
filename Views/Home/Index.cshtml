@@ -32,8 +32,9 @@
                     <h3>@item.PartitionKey</h3>
                     <h5>@item.AverageRating<i class="fas fa-star" aria-hidden="true"></i> (@item.RatingQuantity reviews)</h5>
                     <div class="mt-3 d-flex justify-content-between">
-                        <a href="#" class="btn btn-secondary w-50 mw-50 mr-1 px-1" role="button">Add to Cart</a>
-                        @Html.ActionLink("Details", "ProductForm", "Home", new { item.PartitionKey }, new { @class = "btn btn-primary w-50 mw-50 ml-1 px-1" })
+                        @*<a href="#" class="btn btn-secondary w-50 mw-50 mr-1 px-1" role="button">Add to Cart</a>*@
+                        <button class="btn btn-secondary w-50 mw-50 mr-1 px-1">Add to Cart</button>
+                        @Html.ActionLink("Details", "Details", "Home", new { item.PartitionKey }, new { @class = "btn btn-primary w-50 mw-50 ml-1 px-1" })
                     </div>
                 </div>
             </div>

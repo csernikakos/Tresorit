@@ -20,7 +20,7 @@ namespace Tresorit.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private DataTableQueries dataTable;
+        private DataQueries dataQueries;
         private readonly IConfiguration _configuration;
         private HomeApiController apiController;
 
@@ -29,7 +29,7 @@ namespace Tresorit.Controllers
             _logger = logger;
             _configuration = configuration;
             var connectionString = _configuration.GetConnectionString("StorageAccount");
-            dataTable = new DataTableQueries(connectionString);
+            dataQueries = new DataQueries(connectionString);
             apiController = new HomeApiController(_configuration);
         }
 
@@ -39,9 +39,9 @@ namespace Tresorit.Controllers
             return View(products);
         }
 
-        public IActionResult ProductForm(string partitionKey)
+        public IActionResult Details(string partitionKey)
         {            
-            return View("ProductForm", ViewModelData(partitionKey));
+            return View("Details", ViewModelData(partitionKey));
         }
 
         public IActionResult Save(Product product, List<IFormFile> files)
@@ -58,7 +58,7 @@ namespace Tresorit.Controllers
                         product.ImageName = file.FileName;
                         try
                         {
-                            dataTable.Upload(file).Wait();
+                            dataQueries.Upload(file).Wait();
                         }
                         catch (Exception)
                         {
@@ -66,7 +66,7 @@ namespace Tresorit.Controllers
                         }
                     }                    
                 }
-                dataTable.InsertOrMergeProduct(product).Wait();
+                dataQueries.InsertOrMergeProduct(product).Wait();
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -78,10 +78,17 @@ namespace Tresorit.Controllers
                 }
                 if(product.Rating != 0 && product.Review!=null)
                 {
-                    product.ImageName = apiController.GetImageName(product.PartitionKey);
+                    if (apiController.GetImageName(product.PartitionKey) == null)
+                    {
+                        product.ImageName = "null";
+                    }
+                    else
+                    {
+                        product.ImageName = apiController.GetImageName(product.PartitionKey);
+                    }                                 
                 }                
-                dataTable.InsertOrMergeProduct(product).Wait();
-                return View("ProductForm", ViewModelData(product.PartitionKey));
+                dataQueries.InsertOrMergeProduct(product).Wait();
+                return View("Details", ViewModelData(product.PartitionKey));
             }            
         }
 
