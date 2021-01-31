@@ -98,7 +98,7 @@ namespace Tresorit.Data
         // Insert the new entry into the Table Storage
 
         [HttpPost]
-        public async Task<Product> InsertOrMergeProduct(Product product)
+        public async Task<Product> InsertOrMergeProductAsync(Product product)
         {
             if (product==null)
             {
@@ -123,7 +123,7 @@ namespace Tresorit.Data
         // Upload image to the Blob Storage
 
         [HttpPost]
-        public async Task<string> Upload(IFormFile file)
+        public async Task<string> UploadAsync(IFormFile file)
         {
             BlobServiceClient blobServiceClient = new BlobServiceClient(connString);
             BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient("publicblobcontainer");

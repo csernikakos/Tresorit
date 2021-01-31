@@ -63,7 +63,7 @@ namespace Tresorit.Controllers
                         product.ImageName = file.FileName;
                         try
                         {
-                            dataQueries.Upload(file).Wait();
+                            dataQueries.UploadAsync(file).Wait();
                         }
                         catch (Exception)
                         {
@@ -71,7 +71,7 @@ namespace Tresorit.Controllers
                         }
                     }                    
                 }
-                dataQueries.InsertOrMergeProduct(product).Wait();
+                dataQueries.InsertOrMergeProductAsync(product).Wait();
                 return RedirectToAction("Index", "Home");
             }
 
@@ -97,7 +97,7 @@ namespace Tresorit.Controllers
                         product.ImageName = apiController.GetImageName(product.PartitionKey);
                     }                                 
                 }                
-                dataQueries.InsertOrMergeProduct(product).Wait();
+                dataQueries.InsertOrMergeProductAsync(product).Wait();
                 return View("Details", ViewModelData(product.PartitionKey));
             }            
         }
