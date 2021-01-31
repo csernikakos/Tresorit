@@ -29,6 +29,8 @@ namespace Tresorit.Data
             table = tableClient.GetTableReference(tableName);
         }       
 
+        // Get every unique PartitionKey (Product)
+
         [HttpGet]
         public List<Product> GetUniquePartitionKeys()
         {
@@ -38,6 +40,8 @@ namespace Tresorit.Data
             return distinct;
         }
 
+        // Get every entry that belongs to one PartitionKey (Product)
+
         [HttpGet]
         public List<Product> GetPartitionKeyItems(string partitionkey)
         {
@@ -46,6 +50,8 @@ namespace Tresorit.Data
             List<Product> distinct = itemlist.GroupBy(x => x.RowKey).Select(g => g.First()).OrderByDescending(t=>t.Timestamp).ToList();
             return distinct;
         }
+
+        // Calculate the average rating for a Product
 
         public decimal AverageRating(string partitionkey)
         {
@@ -72,6 +78,8 @@ namespace Tresorit.Data
             return result;
         }
 
+        // Calculate the number of the reviews
+
         public int RatingQuantity(string partitionkey)
         {
             int sum = 0;
@@ -86,6 +94,8 @@ namespace Tresorit.Data
             }
             return sum;
         }
+
+        // Insert the new entry into the Table Storage
 
         [HttpPost]
         public async Task<Product> InsertOrMergeProduct(Product product)
@@ -110,6 +120,8 @@ namespace Tresorit.Data
             }
         }
 
+        // Upload image to the Blob Storage
+
         [HttpPost]
         public async Task<string> Upload(IFormFile file)
         {
@@ -126,6 +138,8 @@ namespace Tresorit.Data
 
             return "OK";
         }
+
+        // Get the image file name that belongs to the product
 
         [HttpGet]
         public string GetImageName(string partitionKey)

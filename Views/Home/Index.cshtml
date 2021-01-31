@@ -5,13 +5,15 @@
 
 <div class="row">
     <div class="col my-1">
-        @*<h1>Products</h1>*@
         @Html.ActionLink("New Product", "New", "Home", null, new { @class = "btn btn-info shadow" })
     </div>
 </div>
 <hr />
 
 <div class="row justify-content-center justify-content-md-start">
+
+    @*Displaying the Products*@
+
     @foreach (var item in Model)
     {
         <div class="col-auto col-md-6 col-lg-4 col-xl-3 mb-4">
@@ -32,7 +34,6 @@
                     <h3>@item.PartitionKey</h3>
                     <h5>@item.AverageRating<i class="fas fa-star" aria-hidden="true"></i> (@item.RatingQuantity reviews)</h5>
                     <div class="mt-3 d-flex justify-content-between">
-                        @*<a href="#" class="btn btn-secondary w-50 mw-50 mr-1 px-1" role="button">Add to Cart</a>*@
                         <button class="btn btn-secondary w-50 mw-50 mr-1 px-1">Add to Cart</button>
                         @Html.ActionLink("Details", "Details", "Home", new { item.PartitionKey }, new { @class = "btn btn-primary w-50 mw-50 ml-1 px-1" })
                     </div>

@@ -8,11 +8,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <div class="container">
     <div class="row">
         <div class="col-md-3">
             <div class="shadow p-3 mb-5 details-card" style="border-radius: 5px; background:#fff">
+
+                @*If the product has an attached image, it will display, if not the Tresorit logo will be displayed*@
+
                 @if (Model.ImageName != null)
                 {
                     <img src="https://tresoritstrorageacc.blob.core.windows.net/publicblobcontainer/@Model.ImageName" class="mx-auto mb-3 d-block" alt="...">
@@ -32,6 +34,9 @@
                 </div>
             </div>
         </div>
+
+        @*List all of the product reviews with the ratings*@
+
         <div class="col-md-9">
             <div>
                 <div>
@@ -80,9 +85,11 @@
 
 
 @using (Html.BeginForm("Save", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return VerifyReview()" }))
-{
+    {
+
+    //Open the popup window for the New Review
+
     <div>
-        <!-- Modal -->
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -130,6 +137,8 @@
 
 <script type="text/javascript">
 
+    // Display only 5 reviews by default
+
     $(document).ready(function () {
         var toggleDivs = function () {
             $("#reviewsDivs").each(function () {
@@ -144,6 +153,8 @@
             toggleDivs();
         });
     });
+
+    // Selecting the rating number
 
     function RateOut(rating) {
         for (var i = 1; i <= rating; i++) {
@@ -170,6 +181,9 @@
             $("#span" + i).attr('class', 'fas fa-star');
         }
     }
+
+    // The client-side validation of the New Review section
+
     function VerifyReview() {
         var rating = $("#lblRating").val();
         var textboxLength = $("#ReviewArea").val().length;

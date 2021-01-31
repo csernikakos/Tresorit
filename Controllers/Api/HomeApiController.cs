@@ -23,6 +23,8 @@ namespace Tresorit.Controllers.Api
             dataQueries = new DataQueries(connectionString);
         }
 
+        // Get every unique PartitionKey (Product)
+
         [HttpGet("products/types")]
         public IEnumerable<Product> GetProductTypes()
         {
@@ -34,6 +36,9 @@ namespace Tresorit.Controllers.Api
             }
             return products;
         }
+
+        // Get every entry that belongs to one PartitionKey (Product)
+
         [HttpGet("products/{partitionKey}")]
         public IEnumerable<Product> GetReviewsByProduct(string partitionkey)
         {
@@ -41,6 +46,7 @@ namespace Tresorit.Controllers.Api
             return products;
         }
 
+        // Get the image file name that belongs to the product
 
         [HttpGet("products/imageName/{partitionKey}")]
         public string GetImageName(string partitionKey)

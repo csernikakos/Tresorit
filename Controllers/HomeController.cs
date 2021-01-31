@@ -44,13 +44,18 @@ namespace Tresorit.Controllers
             return View("Details", ViewModelData(partitionKey));
         }
 
+        // Save new Table Storage entry
+
         public IActionResult Save(Product product, List<IFormFile> files)
         {
             Guid guid = Guid.NewGuid();
             product.RowKey = guid.ToString();
 
+            // Insert new Product into the Table Storage
+
             if (product.Rating == null && product.Review == null)
             {
+                // Check it if the new product has an image attached, if yes it will upload to the Blob Storage
                 foreach (var file in files)
                 {
                     if (file.ContentType.Contains("image"))
@@ -69,6 +74,8 @@ namespace Tresorit.Controllers
                 dataQueries.InsertOrMergeProduct(product).Wait();
                 return RedirectToAction("Index", "Home");
             }
+
+            // Insert a review to the product
             else
             {
                 ModelState.Clear();
@@ -76,11 +83,14 @@ namespace Tresorit.Controllers
                 {
                     product.ImageName = null;
                 }
+
+                // Check the product has an attached image or not
+
                 if(product.Rating != 0 && product.Review!=null)
                 {
-                    if (apiController.GetImageName(product.PartitionKey) == null)
+                    if (apiController.GetImageName(product.PartitionKey) == "")
                     {
-                        product.ImageName = "null";
+                        product.ImageName = null;
                     }
                     else
                     {
@@ -91,6 +101,8 @@ namespace Tresorit.Controllers
                 return View("Details", ViewModelData(product.PartitionKey));
             }            
         }
+
+        // Collecting data for the ViewModel
 
         public ProductViewModel ViewModelData(string partitionKey)
         {
